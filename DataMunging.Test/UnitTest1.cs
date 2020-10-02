@@ -6,17 +6,7 @@ namespace DataMunging.Test
 {
     public class Tests
     {
-        [SetUp]
-        public void Setup()
-        {
-        }
-
-        [Test]
-        public void TestGetLine()
-        {
-            var mock = new Mock<IDataProvider>();
-            //do something here that gets the info we need it to get to do the things we need it to do to pass this test that we still need to write
-            var data = new[]{
+        string [] data = new[]{
                 " Dy MxT   MnT   AvT   HDDay  AvDP 1HrP TPcpn WxType PDir AvSp Dir MxS SkyC MxR MnR AvSLP",
                 "",
                 "   8  75    54    65          50.0       0.00 FH      160  4.2 150  10  2.6  93 41 1026.3",
@@ -25,20 +15,52 @@ namespace DataMunging.Test
                 "  13  70    59    65          55.0       0.00 H       150  3.0 150   8 10.0  83 59 1012.6",
                 "  14  61    59    60       5  55.9       0.00 RF      060  6.7 080   9 10.0  93 87 1008.6",
                 };
-            //mock.Setup(m => m.ReadLine()).Returns(data[rowNum]);
 
-            var parser = new TemperatureParser(mock.Object);
+        [SetUp]
+        public void Setup()
+        {
 
-            var actualResult = parser.ParseRow(data[2]);
+        }
 
-            var expectedResult = new DailyWeatherData()
-            {
-                Day = 8,
-                MaxTemp = 75,
-                MinTemp = 54
-            };
-
+        [Test]
+        public void TestGetLine()
+        {
+            var actualResult = TemperatureParser.ParseRow(data[2]);
+            var expectedResult = makeWeatherData(8, 75, 54);
             actualResult.Should().BeEquivalentTo(expectedResult);
+        }
+
+        [Test]
+        public void ParsingProperlyCleansLine()
+        {
+            var actualResult = TemperatureParser.ParseRow(data[3]);
+            var expectedResult = makeWeatherData(9, 86, 32);
+            actualResult.Should().BeEquivalentTo(expectedResult);
+        }
+
+        [Test]
+        public void TestGetThirdLine()
+        {
+            var actualResult = TemperatureParser.ParseRow(data[4]);
+            var expectedResult = makeWeatherData(12, 88, 73);
+            actualResult.Should().BeEquivalentTo(expectedResult);
+        }
+
+        [TestCase(8, 75, ExpectedResult = 75-8 )]
+        [TestCase(-1, 75, ExpectedResult = 75-(-1) )]
+        [TestCase(5, 75, ExpectedResult = 75-5 )]
+        [TestCase(-17, -7, ExpectedResult = -7-(-17) )]
+        public int TemperatureDeltaTest(int minTemp, int maxTemp) =>
+            makeWeatherData(0, maxTemp, minTemp).DeltaTemp;
+
+        static private DailyWeatherData makeWeatherData(int day, int maxTemp, int minTemp)
+        {
+            return new DailyWeatherData()
+            {
+                Day = day,
+                MaxTemp = maxTemp,
+                MinTemp = minTemp
+            };
         }
     }
 }

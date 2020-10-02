@@ -13,11 +13,19 @@ namespace DataMunging
 
         private IDataProvider dataProvider;
 
-        public DailyWeatherData ParseRow(string rowValue)
+       static public DailyWeatherData ParseRow(string rowValue)
         {
             //DailyWeatherData
             var fields = rowValue.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-            return new DailyWeatherData();
+
+            int day = int.Parse(fields[0]);
+            int maxTemp = int.Parse(fields[1]);
+            int minTemp = int.Parse(fields[2].Replace("*", ""));
+            
+
+            return new DailyWeatherData() { Day = day, 
+                                            MaxTemp = maxTemp, 
+                                            MinTemp = minTemp};
         }
     }
 }
