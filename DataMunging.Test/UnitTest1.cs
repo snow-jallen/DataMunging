@@ -53,6 +53,14 @@ namespace DataMunging.Test
         public int TemperatureDeltaTest(int minTemp, int maxTemp) =>
             makeWeatherData(0, maxTemp, minTemp).DeltaTemp;
 
+        [TestCase(75, 1000, ExpectedResult = 75)]
+        [TestCase(10, 100, ExpectedResult = 10)]
+        [TestCase(66, 66, ExpectedResult = 66)]
+        public int TestReturnLowestDelta(int deltaLow, int deltaHigh)
+        {
+            return DailyWeatherData.FindLowestDelta(deltaLow, deltaHigh);
+        }
+
         static private DailyWeatherData makeWeatherData(int day, int maxTemp, int minTemp)
         {
             return new DailyWeatherData()
