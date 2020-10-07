@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace DataMunging
@@ -21,11 +22,23 @@ namespace DataMunging
             int day = int.Parse(fields[0]);
             int maxTemp = int.Parse(fields[1]);
             int minTemp = int.Parse(fields[2].Replace("*", ""));
-            
 
-            return new DailyWeatherData() { Day = day, 
-                                            MaxTemp = maxTemp, 
+
+            return new DailyWeatherData() { Day = day,
+                                            MaxTemp = maxTemp,
                                             MinTemp = minTemp};
+        }
+        static public IEnumerable<DailyWeatherData> ParseFile(string fileText)
+        {
+            var lines = fileText.Split(new[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
+            var list = new List<DailyWeatherData>();
+
+            foreach(var line  in lines.Skip(1))
+            {
+                list.Add(ParseRow(line));
+            }
+            return list;
+
         }
     }
 }
