@@ -19,8 +19,9 @@ namespace DataMunging
             //DailyWeatherData
             var fields = rowValue.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
-            int day = int.Parse(fields[0]);
-            int maxTemp = int.Parse(fields[1]);
+            if (int.TryParse(fields[0], out int day) == false)
+                throw new ApplicationException("Unparsable data");
+            int maxTemp = int.Parse(fields[1].Replace("*", ""));
             int minTemp = int.Parse(fields[2].Replace("*", ""));
 
 
@@ -35,10 +36,22 @@ namespace DataMunging
 
             foreach(var line  in lines.Skip(1))
             {
-                list.Add(ParseRow(line));
+                try
+                {
+                    list.Add(ParseRow(line));
+                }
+                catch { }
             }
             return list;
 
+        }
+
+        public static int GetDayWithMinTemperatureSpread(IEnumerable<DailyWeatherData> parsedResults)
+        {
+            return parsedResults
+                .OrderBy(r => r.DeltaTemp)
+                .Select(r => r.Day)
+                .First();
         }
     }
 }

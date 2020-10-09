@@ -48,7 +48,9 @@ namespace DataMunging.Test
         public void ThenTheSmallestTemperatureSpreadIsOnDay(int expectedDay)
         {
             var parsedResults = scenarioContext.Get<IEnumerable<DailyWeatherData>>("ParsedResults");
-            var actualDay = parsedResults.OrderBy(r => r.DeltaTemp).Select(r => r.Day);
+            var actualDay = TemperatureParser.GetDayWithMinTemperatureSpread(parsedResults);
+
+            actualDay.Should().Be(expectedDay);
         }
 
 

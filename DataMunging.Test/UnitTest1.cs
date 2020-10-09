@@ -1,6 +1,7 @@
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
+using System.Linq;
 
 namespace DataMunging.Test
 {
@@ -11,9 +12,10 @@ namespace DataMunging.Test
                 "",
                 "   8  75    54    65          50.0       0.00 FH      160  4.2 150  10  2.6  93 41 1026.3",
                 "   9  86    32*   59       6  61.5       0.00         240  7.6 220  12  6.0  78 46 1018.6",
-                "  12  88    73    81          68.7       0.00 RTH     250  8.1 270  21  7.9  94 51 1007.0",
+                "  12  88*   73    81          68.7       0.00 RTH     250  8.1 270  21  7.9  94 51 1007.0",
                 "  13  70    59    65          55.0       0.00 H       150  3.0 150   8 10.0  83 59 1012.6",
                 "  14  61    59    60       5  55.9       0.00 RF      060  6.7 080   9 10.0  93 87 1008.6",
+                "mo  82.9  60.5  71.7    16  58.8       0.00              6.9          5.3"
                 };
 
         [SetUp]
@@ -44,6 +46,20 @@ namespace DataMunging.Test
             var actualResult = TemperatureParser.ParseRow(data[4]);
             var expectedResult = makeWeatherData(12, 88, 73);
             actualResult.Should().BeEquivalentTo(expectedResult);
+        }
+
+        [Test]
+        public void TestLastLine()
+        {
+            try
+            {
+                var actualResult = TemperatureParser.ParseRow(data.Last());
+                Assert.Fail();
+            }
+            catch
+            {
+                Assert.Pass();
+            }
         }
 
         [TestCase(8, 75, ExpectedResult = 75-8 )]
