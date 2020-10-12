@@ -86,5 +86,17 @@ namespace DataMunging.Test
                 MinTemp = minTemp
             };
         }
+
+        [Test]
+        public void EnsureProperParsingProfileForWeatherData()
+        {
+            ParsingProfile Actual = new ParsingProfile()
+            {
+                KeyIndex = 0,
+                MaxIndex = 1,
+                MinIndex = 2,
+                RowContent = data.Skip(2)
+            };
+        }
     }
 }
