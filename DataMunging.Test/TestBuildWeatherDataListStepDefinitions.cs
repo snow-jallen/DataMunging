@@ -31,7 +31,8 @@ namespace DataMunging.Test
         public void WhenTheFileIsParsed()
         {
             var fileText = scenarioContext.Get<string>("fileText");
-            var results = TemperatureParser.ParseFile(fileText);
+            var parsingProfile = ParsingProfileFactory.Create(fileText);
+            var results = TemperatureParser.ParseFile(parsingProfile);
             scenarioContext.Add("ParsedResults", results);
         }
 

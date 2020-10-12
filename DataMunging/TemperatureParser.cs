@@ -29,12 +29,12 @@ namespace DataMunging
                                             MaxTemp = maxTemp,
                                             MinTemp = minTemp};
         }
-        static public IEnumerable<DailyWeatherData> ParseFile(string fileText)
+        static public IEnumerable<DailyWeatherData> ParseFile(ParsingProfile profile)
         {
-            var lines = fileText.Split(new[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
+ 
             var list = new List<DailyWeatherData>();
 
-            foreach(var line  in lines.Skip(1))
+            foreach(var line  in profile.RowContent)
             {
                 try
                 {

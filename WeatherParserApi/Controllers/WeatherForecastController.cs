@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using DataMunging;
 
 namespace WeatherParserApi.Controllers
 {
@@ -26,10 +27,11 @@ namespace WeatherParserApi.Controllers
         [HttpGet]
         public int Get()
         {
-            var fileName = @"C:\Users\jallen\Downloads\weather.dat";
+            var fileName = @"C:\Users\jallen\Downloads\football.dat";
             var contents = System.IO.File.ReadAllText(fileName);
-            var parsedRows = DataMunging.TemperatureParser.ParseFile(contents);
-            var day = DataMunging.TemperatureParser.GetDayWithMinTemperatureSpread(parsedRows);
+            var parsingProfile = ParsingProfileFactory.Create(contents);
+            var parsedRows = TemperatureParser.ParseFile(parsingProfile);
+            var day = TemperatureParser.GetDayWithMinTemperatureSpread(parsedRows);
             return day;
         }
     }
