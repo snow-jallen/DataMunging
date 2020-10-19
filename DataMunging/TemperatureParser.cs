@@ -7,38 +7,29 @@ namespace DataMunging
 {
     public class TemperatureParser
     {
-        public TemperatureParser(IDataProvider dataProvider)
-        {
-            this.dataProvider = dataProvider ?? throw new ArgumentNullException(nameof(dataProvider));
-        }
-
-        private IDataProvider dataProvider;
-
-       static public DailyWeatherData ParseRow(string rowValue)
+       static public DailyWeatherData ParseRow(ParsingProfile profile, string rowValue)
         {
             //DailyWeatherData
             var fields = rowValue.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
-            if (int.TryParse(fields[0], out int day) == false)
-                throw new ApplicationException("Unparsable data");
-            int maxTemp = int.Parse(fields[1].Replace("*", ""));
-            int minTemp = int.Parse(fields[2].Replace("*", ""));
+            int maxTemp = int.Parse(fields[profile.MaxIndex].Replace("*", ""));
+            int minTemp = int.Parse(fields[profile.MinIndex].Replace("*", ""));
 
 
-            return new DailyWeatherData() { Day = day,
+            return new DailyWeatherData() { Key = fields[profile.KeyIndex],
                                             MaxTemp = maxTemp,
                                             MinTemp = minTemp};
         }
         static public IEnumerable<DailyWeatherData> ParseFile(ParsingProfile profile)
         {
- 
+
             var list = new List<DailyWeatherData>();
 
             foreach(var line  in profile.RowContent)
             {
                 try
                 {
-                    list.Add(ParseRow(line));
+                    list.Add(ParseRow(profile, line));
                 }
                 catch { }
             }
@@ -46,11 +37,11 @@ namespace DataMunging
 
         }
 
-        public static int GetDayWithMinTemperatureSpread(IEnumerable<DailyWeatherData> parsedResults)
+        public static string GetDayWithMinTemperatureSpread(IEnumerable<DailyWeatherData> parsedResults)
         {
             return parsedResults
                 .OrderBy(r => r.DeltaTemp)
-                .Select(r => r.Day)
+                .Select(r => r.Key)
                 .First();
         }
     }

@@ -7,7 +7,7 @@ namespace DataMunging
 {
     public class DailyWeatherData
     {
-        public int Day { get; set; }
+        public string Key { get; set; }
         public int MinTemp { get; set; }
         public int MaxTemp { get; set; }
         public int DeltaTemp => MaxTemp - MinTemp;

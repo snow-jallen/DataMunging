@@ -7,6 +7,12 @@ namespace DataMunging.Test
 {
     public class Tests
     {
+        ParsingProfile weatherProfile = new ParsingProfile
+        {
+            KeyIndex = 0,
+            MaxIndex = 1,
+            MinIndex = 2
+        };
         string [] data = new[]{
                 " Dy MxT   MnT   AvT   HDDay  AvDP 1HrP TPcpn WxType PDir AvSp Dir MxS SkyC MxR MnR AvSLP",
                 "",
@@ -27,7 +33,7 @@ namespace DataMunging.Test
         [Test]
         public void TestGetLine()
         {
-            var actualResult = TemperatureParser.ParseRow(data[2]);
+            var actualResult = TemperatureParser.ParseRow(weatherProfile, data[2]);
             var expectedResult = makeWeatherData(8, 75, 54);
             actualResult.Should().BeEquivalentTo(expectedResult);
         }
@@ -35,7 +41,7 @@ namespace DataMunging.Test
         [Test]
         public void ParsingProperlyCleansLine()
         {
-            var actualResult = TemperatureParser.ParseRow(data[3]);
+            var actualResult = TemperatureParser.ParseRow(weatherProfile, data[3]);
             var expectedResult = makeWeatherData(9, 86, 32);
             actualResult.Should().BeEquivalentTo(expectedResult);
         }
@@ -43,7 +49,7 @@ namespace DataMunging.Test
         [Test]
         public void TestGetThirdLine()
         {
-            var actualResult = TemperatureParser.ParseRow(data[4]);
+            var actualResult = TemperatureParser.ParseRow(weatherProfile, data[4]);
             var expectedResult = makeWeatherData(12, 88, 73);
             actualResult.Should().BeEquivalentTo(expectedResult);
         }
@@ -53,7 +59,7 @@ namespace DataMunging.Test
         {
             try
             {
-                var actualResult = TemperatureParser.ParseRow(data.Last());
+                var actualResult = TemperatureParser.ParseRow(weatherProfile, data.Last());
                 Assert.Fail();
             }
             catch
@@ -81,7 +87,7 @@ namespace DataMunging.Test
         {
             return new DailyWeatherData()
             {
-                Day = day,
+                Key = day.ToString(),
                 MaxTemp = maxTemp,
                 MinTemp = minTemp
             };

@@ -25,7 +25,7 @@ namespace WeatherParserApi.Controllers
         }
 
         [HttpGet]
-        public int Get()
+        public string Get()
         {
             var fileName = @"C:\Users\jallen\Downloads\football.dat";
             var contents = System.IO.File.ReadAllText(fileName);
